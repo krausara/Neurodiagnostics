@@ -1,0 +1,6 @@
+.venv/
+__*/
+plots/
+data/
+own_data/
+*.zip
