@@ -8,6 +8,12 @@ def plot_data(data, n_channels, file_path):
     fig.savefig(file_path)
     plt.close(fig)
 
+def plot_10_secs(data, data_type, artifact_windows, output_dir):
+    for name, start_time in artifact_windows.items():
+        fig = data.plot(start=start_time, duration=10.0, n_channels=len(data.ch_names), show=False)
+        fig.savefig(os.path.join(output_dir, f"{name}_{data_type}.png"))
+        plt.close(fig)
+
 def filtering(raw, l_freq):
     '''
     Applies high-pass, low-pass and notch filtering to raw EEG data
@@ -40,7 +46,7 @@ def compute_psd(data, fmax, n_fft, file_path):
     # n_fft multiple that for bigger window = higher freq resolution, lower time res
     # smaller window = lower freq res, higher time res
     psd = data.compute_psd(method="welch", fmin=0.5, fmax=fmax, n_fft=n_fft)
-    fig = psd.plot(picks='eeg', average=True, amplitude=False, show=True)
+    fig = psd.plot(picks='eeg', average=True, amplitude=False, show=False)
 
     ax = fig.axes[0]
 
@@ -83,18 +89,15 @@ def topoalpha(data, file_path):
     plt.close(fig)
 
 
-def applyica(raw, data, n_components=None,):
+def applyica(data, output_dir, n_components=None,):
     '''
     Fits ICA on preprocessed EEG data, generates a comprehensive properties plot (Time, Topo, PSD) for every component
     saves the figures to disk
     '''
-    ica = ICA(n_components=n_components, random_state=42)
-
-    ica.fit(data)
-    print(ica)
-    
-    output_dir = 'plots/ica_components_plots'
     os.makedirs(output_dir, exist_ok=True)
+
+    ica = ICA(n_components=n_components, random_state=42)
+    ica.fit(data)
 
     for i in range(ica.n_components_):
         # plot_properties creates a single consolidated figure containing:
@@ -106,18 +109,32 @@ def applyica(raw, data, n_components=None,):
         fig.savefig(f'{output_dir}/ica_component_{i}.png')
         plt.close(fig)
     
-    #TODO exclude the componants that include artefacts
-    ica.exclude = [0 , 1, 9]
-    reconst_raw = raw.copy()
-    ica.apply(reconst_raw)
-
-    raw.plot(n_channels=len(raw.ch_names), show_scrollbars=True)
-    reconst_raw.plot(n_channels=len(raw.ch_names), show_scrollbars=False
-    )
-    del reconst_raw
-
     # Pop up the overview scroll plots for quick structural exploration
     # Scrollable time-course of activations
     ica.plot_sources(data, block=False)
     # Combined grid of all topographic maps
     ica.plot_components()
+
+    return ica
+
+def remove_artefacts(data, ica, exclude, output_dir):
+    #exclude the componants which are artefacts
+    ica.exclude = exclude
+    reconst_data = data.copy()
+    ica.apply(reconst_data)
+
+    # compare original with excluded data
+    fig = data.plot(n_channels=len(data.ch_names), show_scrollbars=False)
+    fig.savefig(f'{output_dir}/data_original.png')
+    plt.close(fig)
+    fig = reconst_data.plot(n_channels=len(data.ch_names), show_scrollbars=False)
+    fig.savefig(f'{output_dir}/data_excluded.png')
+    plt.close(fig)
+
+    # replot ICA on the excluded data
+    for i in range(ica.n_components_):
+        fig = ica.plot_properties(reconst_data, picks=i, show=False)[0]
+        fig.savefig(f'{output_dir}/ica_component_{i}_new.png')
+        plt.close(fig)
+
+    return reconst_data
