@@ -2,15 +2,11 @@
 
 This repository contains the codebase and scientific report for **Exercise 01: EEG Acquisition, Processing & Visualization**, developed as part of the Computational Neuro-Diagnostics course at the Chair for Neurorehabilitation, University of Augsburg.
 
----
-
 ## 🔍 Project Overview
 The objective of this exercise is to gain hands-on experience in recording EEG data, preprocessing raw signals, and performing spectral/independent component analyses. The project is split into three main segments:
 1. **Publicly Available Data:** Loading, filtering, re-referencing, and plotting PSD/alpha topography for the PhysioNet EEG Motor Movement/Imagery Dataset.
 2. **Own Clean Resting-State Data:** Analyzing 2-minute eyes-open vs. eyes-closed recordings acquired using the Starstim system to evaluate physiological differences.
 3. **Own Noisy Data:** Utilizing Independent Component Analysis (ICA) to isolate and eliminate ocular (blinks, lateral movements), muscular (chewing), and channel-noise artifacts from a deliberate artifact-laden recording.
-
----
 
 ## 📁 Repository Structure
 To ensure reproducibility, please maintain the following file hierarchy:
@@ -35,8 +31,6 @@ To ensure reproducibility, please maintain the following file hierarchy:
 └── README.md              # Project documentation (this file)
 ```
 
----
-
 ## 🛠️ Prerequisites & Installation
 
 1. Clone repository / use the provided code.zip
@@ -55,8 +49,6 @@ source venv/bin/activate  # On Windows use: venv\Scripts\activate
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
-
----
 
 ## 🚀 How to Run the Code
 The analysis pipeline uses strict relative paths to verify execution across different workstations without throwing path errors.  
