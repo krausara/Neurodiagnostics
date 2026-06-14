@@ -37,16 +37,14 @@ def rereferencing(filtered):
     reref.set_eeg_reference(ref_channels='average', projection=False)
     return reref    
 
-def compute_psd(data, fmax, n_fft, file_path):
+def compute_psd(data, fmax, n_fft, file_path, avg=True):
     '''
     Compute the Power Spectral Density using Welch's method
     plot the spectrum and mark the typical EEG frequency bands
     '''
     # Welch's method for continous EEG data -> noise reduction, stationarity, FFT length
-    # n_fft multiple that for bigger window = higher freq resolution, lower time res
-    # smaller window = lower freq res, higher time res
     psd = data.compute_psd(method="welch", fmin=0.5, fmax=fmax, n_fft=n_fft)
-    fig = psd.plot(picks='eeg', average=True, amplitude=False, show=False)
+    fig = psd.plot(picks='eeg', average=avg, amplitude=False, show=False)
 
     ax = fig.axes[0]
 
@@ -54,8 +52,8 @@ def compute_psd(data, fmax, n_fft, file_path):
     bands = {
         'Delta': (0.5, 4, '#9999ff'),
         'Theta': (4, 8, '#99ff99'),
-        'Alpha': (8, 12, '#ffff99'),
-        'Beta':  (12, 30, '#ffcc99'),
+        'Alpha': (8, 13, '#ffff99'),
+        'Beta':  (13, 30, '#ffcc99'),
         'Gamma': (30, fmax, '#ff9999')
     }
     # Get y coordinate for band text position
@@ -81,10 +79,10 @@ def topoalpha(data, file_path):
     '''
     Plots the alpha band's spatial distribution as a topographic map
     '''
-    bounds = (8, 12)
+    bounds = (8, 13)
     fig = data.plot_topomap(bands={'Alpha': bounds}, ch_type='eeg', sensors=True)
     fig.suptitle(f"Alpha Band ({bounds[0]}-{bounds[1]} Hz) Spatial Topomap", 
-                 fontsize=12, weight='bold')
+                 fontsize=7, weight='bold')
     fig.savefig(file_path)
     plt.close(fig)
 
@@ -118,6 +116,11 @@ def applyica(data, output_dir, n_components=None,):
     return ica
 
 def remove_artefacts(data, ica, exclude, output_dir):
+    '''
+    Removes the given components (exclude) from the EEG data
+    Plots both original and excluded data
+    Replot ICA componets
+    '''
     #exclude the componants which are artefacts
     ica.exclude = exclude
     reconst_data = data.copy()
