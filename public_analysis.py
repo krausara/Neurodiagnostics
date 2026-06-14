@@ -1,7 +1,7 @@
 from analysis import *
 import os
 # 4.1 Public available data
-data_folder = 'data/'
+data_folder = 'data/public_data'
 subject = 'S001'
 run = 'R01'
 file_path = data_folder + subject + '/' + subject + run + '.edf'
@@ -29,8 +29,7 @@ plot_data(filtered, n_channels=64, file_path=f'{dir_path}/{subject}_{run}_filter
 reref = rereferencing(filtered)
 plot_data(reref, n_channels=64, file_path=f'{dir_path}/{subject}_{run}_reref_plot.png')
 # compute and plot the PSD for the rereferenced data
-# fmax = 80 Hz sampling freq
 # n_fft = 160 sampling rate of data is 160/s 
-psd = compute_psd(reref, fmax=80, n_fft=160, file_path=f'{dir_path}/{subject}_{run}_psd_plot.png')
+psd = compute_psd(reref, fmax=45, n_fft=160, file_path=f'{dir_path}/{subject}_{run}_psd_plot.png')
 # Plot a topomap for the alpha band
 topoalpha(psd, file_path=f'{dir_path}/{subject}_{run}_topoalpha_plot.png')

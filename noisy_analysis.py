@@ -1,15 +1,13 @@
 import os
 from analysis import *
 
-data_folder = 'own_data/'
-condition = '20260529133138_artifacts'
-protocol = 'eyes_open'
+data_folder = 'data/own_data/'
+condition = 'artifacts'
 
 # 4.3 Own noisy data
-file_path = data_folder + '_'.join([condition, protocol]) + '.nedf'
+file_path = data_folder + condition + '.nedf'
 
 # Create directory to store plots
-_, condition = condition.split('_', maxsplit=1)
 dir_path = f'plots/{condition}' 
 os.makedirs(dir_path, exist_ok=True)
 
@@ -28,10 +26,10 @@ sfreq = raw.info['sfreq']
 # Map the Event IDs to midpoints of 10-second windows
 # Event pairs: (1,2)=Blinks, (3,4)=Lateral, (5,6)=Chew, (7,8)=Pz Noise
 artifact_windows = {
-    "eye_blink": events[events[:, 2] == 1][0][0] / sfreq, #+ 2.0,             2.83s + 2s buffer
-    "lateral_eye_movement": events[events[:, 2] == 3][0][0] / sfreq, # + 5.0,  29.52s + 5s buffer
-    "chewing": events[events[:, 2] == 5][0][0] / sfreq, # + 5.0,              # 60.05s + 5s buffer
-    "channel_noise": events[events[:, 2] == 7][0][0] / sfreq, # + 5.0,        # 89.66s + 5s buffer
+    "eye_blink": events[events[:, 2] == 1][0][0] / sfreq,
+    "lateral_eye_movement": events[events[:, 2] == 3][0][0] / sfreq,
+    "chewing": events[events[:, 2] == 5][0][0] / sfreq, 
+    "channel_noise": events[events[:, 2] == 7][0][0] / sfreq,
 }
 
 # Plot each 10 second event
