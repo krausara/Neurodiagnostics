@@ -35,7 +35,7 @@ To ensure reproducibility, please maintain the following file hierarchy:
 
 1. Clone repository / use the provided code.zip
 ```bash
-git clone [https://github.com/krausara/Neurodiagnostics.git](https://github.com/krausara/Neurodiagnostics.git)
+git clone https://github.com/krausara/Neurodiagnostics.git
 cd Neurodiagnostics
 ```
 2. Set up virtual environment
