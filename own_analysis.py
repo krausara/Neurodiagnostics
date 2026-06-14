@@ -21,7 +21,7 @@ for condition in conditions:
     n_channels = len(raw.ch_names)
 
     fig = raw.plot_sensors(kind='topomap', show_names=True)
-    fig.savefig(f'plots/sensors.png')
+    fig.savefig(f'{dir_path}/sensors.png')
     plt.close(fig)
     # Plot raw data
     plot_data(raw, n_channels=n_channels, file_path=f'{dir_path}/{condition}_raw_plot.png')

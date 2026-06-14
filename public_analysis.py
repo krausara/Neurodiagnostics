@@ -1,7 +1,7 @@
 from analysis import *
 import os
 # 4.1 Public available data
-data_folder = 'data/public_data'
+data_folder = 'data/public_data/'
 subject = 'S001'
 run = 'R01'
 file_path = data_folder + subject + '/' + subject + run + '.edf'
