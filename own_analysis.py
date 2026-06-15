@@ -34,6 +34,6 @@ for condition in conditions:
     # compute and plot the PSD for the rereferenced data
     # n_fft = 500 sampling rate of data is 500/s 
     psd = compute_psd(reref, fmax=45, n_fft=500, file_path=f'{dir_path}/{condition}_psd_plot.png')
-    psd_avg = compute_psd(reref, fmax=45, n_fft=500, file_path=f'{dir_path}/{condition}_psd_single.png', avg=False)
+    psd_avg = compute_psd(reref, fmax=45, n_fft=500, file_path=f'{dir_path}/{condition}_psd_plot_separate.png', avg=False)
     # Plot a topomap for the alpha band
-    topoalpha(psd, file_path=f'{dir_path}/{condition}_topoalpha_plot.png')
+    topoalpha(raw, psd, file_path=f'{dir_path}/{condition}_topoalpha_plot.png')

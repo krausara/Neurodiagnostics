@@ -32,4 +32,4 @@ plot_data(reref, n_channels=64, file_path=f'{dir_path}/{subject}_{run}_reref_plo
 # n_fft = 160 sampling rate of data is 160/s 
 psd = compute_psd(reref, fmax=45, n_fft=160, file_path=f'{dir_path}/{subject}_{run}_psd_plot.png')
 # Plot a topomap for the alpha band
-topoalpha(psd, file_path=f'{dir_path}/{subject}_{run}_topoalpha_plot.png')
+topoalpha(raw, psd, file_path=f'{dir_path}/{subject}_{run}_topoalpha_plot.png')

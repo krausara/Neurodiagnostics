@@ -2,6 +2,7 @@ import os
 import mne
 from mne.preprocessing import ICA
 import matplotlib.pyplot as plt
+import numpy as np
 
 def plot_data(data, n_channels, file_path):
     fig = data.plot(duration=20, n_channels=n_channels, show=False, scalings='auto')
@@ -75,17 +76,28 @@ def compute_psd(data, fmax, n_fft, file_path, avg=True):
     plt.close(fig)
     return psd
 
-def topoalpha(data, file_path):
+def topoalpha(raw, psd, file_path):
     '''
     Plots the alpha band's spatial distribution as a topographic map
     '''
+    fig, ax = plt.subplots(figsize=(5, 5))
+    # Compute alpha band average psd
+    psds, freqs = psd.get_data(return_freqs=True)
     bounds = (8, 13)
-    fig = data.plot_topomap(bands={'Alpha': bounds}, ch_type='eeg', sensors=True)
+    avg_psd_per_channel = np.mean(psds[:, bounds], axis=1)   
+    
+    im, cm = mne.viz.plot_topomap(avg_psd_per_channel, raw.info, axes=ax, show=False, cmap='Spectral_r')
+
+    # Create the colorbar scale using that image object
+    cbar = fig.colorbar(im, ax=ax, orientation='vertical', shrink=0.75)
+    # Give the scale a label 
+    cbar.set_label(r'$\mu\text{V}^2/\text{Hz}$')
+
     fig.suptitle(f"Alpha Band ({bounds[0]}-{bounds[1]} Hz) Spatial Topomap", 
-                 fontsize=7, weight='bold')
+                 fontsize=14, weight='bold') 
+    fig.savefig('psd_topomap_with_scale.png', dpi=300, bbox_inches='tight')
     fig.savefig(file_path)
     plt.close(fig)
-
 
 def applyica(data, output_dir, n_components=None,):
     '''
